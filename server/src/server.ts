@@ -1,21 +1,23 @@
 import "reflect-metadata";
-import {createConnection} from "typeorm";
-import {User} from "./entities/User";
+import { createConnection } from "typeorm";
+import express from "express";
+import morgan from "morgan";
 
-createConnection().then(async connection => {
+const app = express();
 
-    console.log("Inserting a new user into the database...");
-    const user = new User();
-    user.firstName = "Timber";
-    user.lastName = "Saw";
-    user.age = 25;
-    await connection.manager.save(user);
-    console.log("Saved a new user with id: " + user.id);
+app.use(express.json());
+app.use(morgan("dev"));
 
-    console.log("Loading users from the database...");
-    const users = await connection.manager.find(User);
-    console.log("Loaded users: ", users);
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 
-    console.log("Here you can setup and run express/koa/any other framework.");
-
-}).catch(error => console.log(error));
+app.listen(2004, async () => {
+  console.log("Server Started.");
+  try {
+    await createConnection();
+    console.log("DB CONNCTED");
+  } catch (error) {
+    console.log("ERROR IN DB CONNECTION", error);
+  }
+});
