@@ -10,6 +10,7 @@ dotenv.config();
 import authRoutes from "./routes/auth";
 import postsRoutes from "./routes/posts";
 import subsRoutes from "./routes/subs";
+import commentsRoutes from "./routes/comments";
 import trim from "./middlewares/trim";
 
 const app = express();
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postsRoutes);
 app.use("/api/subs", subsRoutes);
+app.use("/api/comments", commentsRoutes);
 
 app.listen(2004, async () => {
   console.log("Server Started.");
