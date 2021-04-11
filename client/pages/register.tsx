@@ -30,7 +30,7 @@ export default function Register() {
   };
 
   return (
-    <div className="flex register">
+    <div className="flex bg-white register">
       <Head>
         <title>Register</title>
         <link rel="icon" href="/favicon.ico" />

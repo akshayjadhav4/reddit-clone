@@ -28,7 +28,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex login">
+    <div className="flex bg-white login">
       <Head>
         <title>Login</title>
         <link rel="icon" href="/favicon.ico" />
