@@ -14,8 +14,8 @@ export default function Register() {
       ></div>
       <div className="flex flex-col justify-center pl-6 form-container">
         <div className="w-72">
-          <h1 className="mb-2 font-sans text-lg font-bold">Sign Up</h1>
-          <p className="mb-12 font-sans text-xs">
+          <h1 className="mb-2 text-lg font-bold">Sign Up</h1>
+          <p className="mb-12 text-xs">
             By continuing, you agree to our{" "}
             <span className="text-blue-500 cursor-pointer">User Agreement</span>{" "}
             and{" "}
@@ -48,7 +48,7 @@ export default function Register() {
               Sign Up
             </button>
           </form>
-          <small className="font-sans text-sm">
+          <small className="text-sm ">
             Already a have an account ?{" "}
             <Link href="/login">
               <a className="text-blue-500">LOG IN</a>
