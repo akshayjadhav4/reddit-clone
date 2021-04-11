@@ -5,7 +5,11 @@ module.exports = {
     fontFamily: {
       body: ["IBM Plex Sans"],
     },
-    extend: {},
+    extend: {
+      spacing: {
+        160: "40rem",
+      },
+    },
   },
   variants: {
     extend: {},
