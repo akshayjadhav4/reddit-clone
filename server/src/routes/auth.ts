@@ -7,6 +7,16 @@ import cookie from "cookie";
 import User from "../entities/User";
 import auth from "../middlewares/auth";
 
+const mapErrors = (errors: Object[]) => {
+  let mappedErrors: any = {};
+  errors.forEach((error: any) => {
+    const key = error.property;
+    const value = Object.entries(error.constraints)[0][1];
+    mappedErrors[key] = value;
+  });
+  return mappedErrors;
+};
+
 const register = async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
   try {
@@ -19,7 +29,7 @@ const register = async (req: Request, res: Response) => {
     if (userUsername) errors.username = "Username is already taken";
 
     if (Object.keys(errors).length > 0) {
-      return res.status(400).json({ errors });
+      return res.status(400).json(errors);
     }
 
     // create new user
@@ -28,7 +38,7 @@ const register = async (req: Request, res: Response) => {
     // validate req.body input
     errors = await validate(user);
     if (errors.length > 0) {
-      return res.status(400).json({ errors });
+      return res.status(400).json(mapErrors(errors));
     }
     // save user to db
     await user.save();
@@ -48,7 +58,7 @@ const login = async (req: Request, res: Response) => {
     if (isEmpty(password)) errors.password = "Provide Password";
 
     if (Object.keys(errors).length > 0) {
-      return res.status(400).json({ errors });
+      return res.status(400).json(errors);
     }
     // get user
     const user = await User.findOne({ username });
