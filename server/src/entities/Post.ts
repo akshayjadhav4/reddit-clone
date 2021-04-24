@@ -7,6 +7,8 @@ import {
   BeforeInsert,
   OneToMany,
 } from "typeorm";
+import { Expose } from "class-transformer";
+
 import { makeId, stringToSlug } from "../utils/helpers";
 import Comment from "./Comment";
 
@@ -38,6 +40,9 @@ export default class Post extends Entity {
   @Column()
   subName: string;
 
+  @Column()
+  username: string;
+
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: "username", referencedColumnName: "username" })
   user: User;
@@ -48,6 +53,11 @@ export default class Post extends Entity {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
+
+  // virtual field
+  @Expose() get url(): string {
+    return `/r/${this.subName}/${this.identifier}/${this.slug}`;
+  }
 
   @BeforeInsert()
   makeIdAndSlug() {
