@@ -7,4 +7,7 @@ export interface Post {
   username: string;
   url: string;
   createdAt: string;
+  voteScore?: number;
+  commentCount?: number;
+  userVote?: number;
 }

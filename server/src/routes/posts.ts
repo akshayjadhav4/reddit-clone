@@ -4,6 +4,8 @@ import Post from "../entities/Post";
 import Sub from "../entities/Sub";
 
 import auth from "../middlewares/auth";
+import user from "../middlewares/user";
+
 const createPost = async (req: Request, res: Response) => {
   const { title, body, subName } = req.body;
   const user = res.locals.user;
@@ -29,7 +31,11 @@ const getPosts = async (_: Request, res: Response) => {
   try {
     const posts = await Post.find({
       order: { createdAt: "DESC" },
+      relations: ["comments", "votes", "sub"],
     });
+    if (res.locals.user) {
+      posts.forEach((post) => post.setUserVote(res.locals.user));
+    }
     return res.json(posts);
   } catch (error) {
     console.log("GET POSTS ERROR");
@@ -42,7 +48,7 @@ const getPost = async (req: Request, res: Response) => {
   try {
     const post = await Post.findOneOrFail(
       { identifier, slug },
-      { relations: ["sub"] }
+      { relations: ["comments", "votes", "sub"] }
     );
     return res.json(post);
   } catch (error) {
@@ -52,8 +58,8 @@ const getPost = async (req: Request, res: Response) => {
 };
 
 const router = Router();
-router.post("/create", auth, createPost);
-router.get("/getPosts", getPosts);
+router.post("/create", user, auth, createPost);
+router.get("/getPosts", user, getPosts);
 router.get("/getPost/:identifier/:slug", getPost);
 
 export default router;

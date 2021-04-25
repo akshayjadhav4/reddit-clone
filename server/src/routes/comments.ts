@@ -3,6 +3,7 @@ import Comment from "../entities/Comment";
 
 import Post from "../entities/Post";
 import auth from "../middlewares/auth";
+import user from "../middlewares/user";
 
 const addComment = async (req: Request, res: Response) => {
   const { identifier, slug } = req.params;
@@ -22,6 +23,6 @@ const addComment = async (req: Request, res: Response) => {
 };
 
 const router = Router();
-router.post("/:identifier/:slug/add", auth, addComment);
+router.post("/:identifier/:slug/add", user, auth, addComment);
 
 export default router;
