@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import Axios from "axios";
 
 import InputGroup from "../components/InputGroup/InputGroup";
+import { useAuthState } from "../context/auth";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,8 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<any>({});
   const router = useRouter();
+
+  const { authenticated } = useAuthState();
 
   const registerUser = async (event: FormEvent) => {
     event.preventDefault();
@@ -28,7 +31,9 @@ export default function Register() {
       setErrors(error.response.data);
     }
   };
-
+  if (authenticated) {
+    router.push("/");
+  }
   return (
     <div className="flex bg-white register">
       <Head>

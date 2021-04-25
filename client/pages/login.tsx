@@ -6,27 +6,33 @@ import { useRouter } from "next/router";
 import Axios from "axios";
 
 import InputGroup from "../components/InputGroup/InputGroup";
-
+import { useAuthDispath, useAuthState } from "../context/auth";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<any>({});
   const router = useRouter();
 
+  const dispatch = useAuthDispath();
+  const { authenticated } = useAuthState();
+
   const loginUser = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      await Axios.post("auth/login", {
+      const res = await Axios.post("auth/login", {
         password,
         username,
       });
+      dispatch({ type: "LOGIN", payload: res.data });
       router.push("/");
     } catch (error) {
       console.log("ERROR WHILE SIGNIN OPERATION", error.response.data);
       setErrors(error.response.data);
     }
   };
-
+  if (authenticated) {
+    router.push("/");
+  }
   return (
     <div className="flex bg-white login">
       <Head>
