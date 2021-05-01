@@ -10,6 +10,15 @@ import { AuthProvider } from "../context/auth";
 Axios.defaults.baseURL = "http://localhost:2004/api";
 Axios.defaults.withCredentials = true;
 
+const fetcher = async (url: string) => {
+  try {
+    const res = await Axios.get(url);
+    return res.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 function App({ Component, pageProps }: AppProps) {
   const { pathname } = useRouter();
   const authRoutes = ["/register", "/login"];
@@ -17,13 +26,15 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <SWRConfig
       value={{
-        fetcher: (url) => Axios.get(url).then((res) => res.data),
+        fetcher,
         dedupingInterval: 20000,
       }}
     >
       <AuthProvider>
         {!authRoute && <Navbar />}
-        <Component {...pageProps} />
+        <div className={authRoute ? "" : "pt-12"}>
+          <Component {...pageProps} />
+        </div>
       </AuthProvider>
     </SWRConfig>
   );

@@ -1,17 +1,14 @@
-import { useEffect, useState } from "react";
 import Head from "next/head";
 
-import Axios from "axios";
 import useSWR from "swr";
 
-import { Post } from "../types";
 import PostCard from "../components/PostCard/PostCard";
 
 export default function Home() {
   const { data: posts } = useSWR("/posts/getPosts");
 
   return (
-    <div className="pt-12 home">
+    <div className="home">
       <Head>
         <title>Get the information</title>
         <link rel="icon" href="/favicon.ico" />
