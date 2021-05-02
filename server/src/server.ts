@@ -33,6 +33,9 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+//access public folder
+app.use(express.static("public"));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postsRoutes);
 app.use("/api/subs", subsRoutes);

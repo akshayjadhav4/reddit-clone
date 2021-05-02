@@ -1,11 +1,16 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { isEmpty } from "class-validator";
 import { getRepository } from "typeorm";
+import multer, { FileFilterCallback } from "multer";
+import path from "path";
+import fs from "fs";
 
 import auth from "../middlewares/auth";
 import Sub from "../entities/Sub";
 import user from "../middlewares/user";
 import Post from "../entities/Post";
+import { makeId } from "../utils/helpers";
+import User from "../entities/User";
 
 const createSub = async (req: Request, res: Response) => {
   const { name, title, description } = req.body;
@@ -59,8 +64,75 @@ const getSub = async (req: Request, res: Response) => {
   }
 };
 
+const OwnSub = async (req: Request, res: Response, next: NextFunction) => {
+  const user: User = res.locals.user;
+  try {
+    const sub = await Sub.findOneOrFail({ where: { name: req.params.name } });
+    if (sub.username !== user.username) {
+      return res.status(403).json({ error: "You don't own this sub" });
+    }
+    res.locals.sub = sub;
+    return next();
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong." });
+  }
+};
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: "public/images",
+    filename: (req, file, callback) => {
+      const name = makeId(15);
+      callback(null, name + path.extname(file.originalname));
+    },
+  }),
+  fileFilter: (_, file: any, callback: FileFilterCallback) => {
+    if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
+      callback(null, true);
+    } else {
+      callback(new Error("Not supported file type"));
+    }
+  },
+});
+
+const handleSubImage = async (req: Request, res: Response) => {
+  const sub: Sub = res.locals.sub;
+  try {
+    const type = req.body.type;
+    if (type !== "image" && type !== "banner") {
+      fs.unlinkSync(req.file.path); //delete file
+      return res.status(400).json({ error: "Invalid Type" });
+    }
+    const urn = req.file.filename;
+    let oldImageURN: string = "";
+    if (type === "image") {
+      oldImageURN = sub.imageURN || "";
+      sub.imageURN = urn;
+    } else if (type === "banner") {
+      oldImageURN = sub.bannerURN || "";
+      sub.bannerURN = urn;
+    }
+
+    await sub.save();
+    if (oldImageURN !== "") {
+      fs.unlinkSync(`public\\images\\${oldImageURN}`);
+    }
+    return res.json(sub);
+  } catch (error) {
+    return res.status(500).json({ error: "Error while saving image" });
+  }
+};
+
 const router = Router();
 router.post("/create", user, auth, createSub);
 router.get("/getSub/:name", user, getSub);
+router.post(
+  "/:name/image",
+  user,
+  auth,
+  OwnSub,
+  upload.single("file"),
+  handleSubImage
+);
 
 export default router;
