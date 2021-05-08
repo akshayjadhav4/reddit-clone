@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { getRepository } from "typeorm";
+import { getConnection } from "typeorm";
 
 import auth from "../middlewares/auth";
 import User from "../entities/User";
@@ -7,6 +7,7 @@ import Post from "../entities/Post";
 import Vote from "../entities/Vote";
 import Comment from "../entities/Comment";
 import user from "../middlewares/user";
+import Sub from "../entities/Sub";
 
 const vote = async (req: Request, res: Response) => {
   const { identifier, slug, commentIdentifier, value } = req.body;
@@ -59,7 +60,31 @@ const vote = async (req: Request, res: Response) => {
   }
 };
 
+const topSubs = async (req: Request, res: Response) => {
+  try {
+    const imageURL = `COALESCE('${process.env.APP_URL}/images/' || s."imageURN" , 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y')`;
+    const subs = await getConnection()
+      .createQueryBuilder()
+      .select(
+        `s.title, s.name, ${imageURL} as "imageURL", count(p.id) as "postCount"`
+      )
+      .from(Sub, "s")
+      .leftJoin(Post, "p", `s.name = p."subName"`)
+      .groupBy('s.title, s.name, "imageURL"')
+      .orderBy(`"postCount"`, "DESC")
+      .limit(5)
+      .execute();
+    return res.json(subs);
+  } catch (error) {
+    console.log("ERROR WHILE FETCHING TOP SUBS", error);
+    return res
+      .status(500)
+      .json({ error: "Something went wrong while getting top subs" });
+  }
+};
+
 const router = Router();
 router.post("/vote", user, auth, vote);
+router.get("/topSubs", topSubs);
 
 export default router;

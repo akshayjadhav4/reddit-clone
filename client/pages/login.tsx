@@ -24,7 +24,7 @@ export default function Login() {
         username,
       });
       dispatch({ type: "LOGIN", payload: res.data });
-      router.push("/");
+      router.back();
     } catch (error) {
       console.log("ERROR WHILE SIGNIN OPERATION", error.response.data);
       setErrors(error.response.data);

@@ -9,6 +9,7 @@ import Axios from "axios";
 import PostCard from "../../components/PostCard/PostCard";
 import { Sub } from "../../types";
 import { useAuthState } from "../../context/auth";
+import Sidebar from "../../components/Sidebar/Sidebar";
 
 export default function SubPage() {
   const router = useRouter();
@@ -136,6 +137,7 @@ export default function SubPage() {
           {/* Posts & sidebar */}
           <div className="container flex pt-5">
             <div className="w-160">{pageContent}</div>
+            <Sidebar sub={sub} />
           </div>
         </>
       )}
