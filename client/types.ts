@@ -18,3 +18,17 @@ export interface User {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Sub {
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  title: string;
+  description: string;
+  imageURN: string;
+  bannerURN: string;
+  username: string;
+  posts: Post[];
+  imageURL: string;
+  bannerURL: string;
+}
