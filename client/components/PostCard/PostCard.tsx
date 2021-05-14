@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import Axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import classnames from "classnames";
 import { Post } from "../../types";
+import { useAuthState } from "../../context/auth";
 
 interface PostCardProps {
   post: Post;
@@ -21,7 +23,12 @@ const ActionButton = ({ children }) => {
 };
 
 export default function PostCard({ post }: PostCardProps) {
+  const { authenticated } = useAuthState();
+  const router = useRouter();
+
   const vote = async (value) => {
+    if (!authenticated) router.push("/login");
+
     try {
       const res = await Axios.post("/msc/vote", {
         identifier: post.identifier,
