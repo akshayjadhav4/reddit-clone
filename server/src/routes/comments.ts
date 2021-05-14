@@ -32,7 +32,7 @@ const getComments = async (req: Request, res: Response) => {
       relations: ["votes"],
     });
     if (res.locals.user) {
-      comments.forEach((post) => post.setUserVote(res.locals.user));
+      comments.forEach((comment) => comment.setUserVote(res.locals.user));
     }
     return res.json(comments);
   } catch (error) {
