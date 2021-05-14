@@ -123,9 +123,29 @@ const handleSubImage = async (req: Request, res: Response) => {
   }
 };
 
+const searchSubs = async (req: Request, res: Response) => {
+  try {
+    const name = req.params.name;
+    if (isEmpty(name)) {
+      return res.status(400).json({ error: "Provide valid name" });
+    }
+    const subs = await getRepository(Sub)
+      .createQueryBuilder()
+      .where("LOWER(name) LIKE :name", {
+        name: `${name.toLowerCase().trim()}%`,
+      })
+      .getMany();
+
+    return res.json(subs);
+  } catch (error) {
+    return res.status(500).json({ error: "Error while Searching Subs" });
+  }
+};
+
 const router = Router();
 router.post("/create", user, auth, createSub);
 router.get("/getSub/:name", user, getSub);
+router.get("/search/:name", searchSubs);
 router.post(
   "/:name/image",
   user,
