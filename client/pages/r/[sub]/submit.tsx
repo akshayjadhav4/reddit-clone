@@ -7,6 +7,7 @@ import Axios from "axios";
 
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import { Post, Sub } from "../../../types";
+import { GetServerSideProps } from "next";
 
 export default function Submit() {
   const router = useRouter();
@@ -83,3 +84,14 @@ export default function Submit() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  try {
+    const cookie = req.headers.cookie;
+    if (!cookie) throw new Error("Missing Auth Cookie");
+    await Axios.get("/auth/isAuthenticated", { headers: { cookie } });
+    return { props: {} };
+  } catch (error) {
+    res.writeHead(307, { Location: "/login" }).end();
+  }
+};
