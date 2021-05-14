@@ -5,12 +5,13 @@ import Link from "next/link";
 import useSWR from "swr";
 
 import PostCard from "../components/PostCard/PostCard";
+import { useAuthState } from "../context/auth";
 import { Sub, Post } from "../types";
 
 export default function Home() {
   const { data: posts } = useSWR<Post[]>("/posts/getPosts");
   const { data: subs } = useSWR<Sub[]>("/msc/topSubs");
-
+  const { authenticated } = useAuthState();
   return (
     <div className="home">
       <Head>
@@ -57,6 +58,13 @@ export default function Home() {
               <p className="ml-auto font-medium">{sub.postCount}</p>
             </div>
           ))}
+          {authenticated && (
+            <div className="p-4 bg-white border-t-2">
+              <Link href="/subs/create">
+                <a className="w-full px-2 py-1 blue button">Create Community</a>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
