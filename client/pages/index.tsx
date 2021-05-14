@@ -5,11 +5,11 @@ import Link from "next/link";
 import useSWR from "swr";
 
 import PostCard from "../components/PostCard/PostCard";
-import { Sub } from "../types";
+import { Sub, Post } from "../types";
 
 export default function Home() {
-  const { data: posts } = useSWR("/posts/getPosts");
-  const { data: subs } = useSWR("/msc/topSubs");
+  const { data: posts } = useSWR<Post[]>("/posts/getPosts");
+  const { data: subs } = useSWR<Sub[]>("/msc/topSubs");
 
   return (
     <div className="home">
@@ -33,7 +33,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          {subs?.map((sub: Sub) => (
+          {subs?.map((sub) => (
             <div
               key={sub.name}
               className="flex items-center px-4 py-2 text-xs bg-white border-b"
