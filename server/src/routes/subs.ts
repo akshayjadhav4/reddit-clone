@@ -20,6 +20,7 @@ const createSub = async (req: Request, res: Response) => {
     let errors: any = {};
     if (isEmpty(name)) errors.name = "Name Required";
     if (isEmpty(title)) errors.title = "Title Required";
+    if (isEmpty(description)) errors.description = "Description Required";
 
     const sub = await getRepository(Sub)
       .createQueryBuilder("sub")
@@ -31,7 +32,7 @@ const createSub = async (req: Request, res: Response) => {
       throw errors;
     }
   } catch (error) {
-    return res.status(400).json({ error });
+    return res.status(400).json(error);
   }
 
   try {
@@ -40,7 +41,7 @@ const createSub = async (req: Request, res: Response) => {
     return res.json(sub);
   } catch (error) {
     console.log("CREATE SUB ERROR", error);
-    return res.status(500).json("Something went wrong...");
+    return res.status(500).json({ error: "Something went wrong..." });
   }
 };
 
