@@ -20,13 +20,13 @@ export default function Home() {
       </Head>
       <div className="container flex pt-4">
         {/* POSTS */}
-        <div className="w-160">
+        <div className="w-full px-4 md:w-160 md:p-0">
           {posts?.map((post) => (
             <PostCard key={post.identifier} post={post} />
           ))}
         </div>
         {/* sidebar */}
-        <div className="ml-6 w-80">
+        <div className="hidden ml-6 md:block w-80">
           <div className="bg-white rounded">
             <div className="p-4 border-b-2">
               <p className="text-lg font-semibold text-center ">
@@ -52,7 +52,7 @@ export default function Home() {
               </Link>
               <Link href={`/r/${sub.name}`}>
                 <a className="ml-2 font-bold hover:cursor-pointer ">
-                  /r/${sub.name}
+                  /r/{sub.name}
                 </a>
               </Link>
               <p className="ml-auto font-medium">{sub.postCount}</p>
