@@ -18,9 +18,11 @@ export default function SubPage() {
   const subName = router.query.sub;
   const [ownSub, setOwnSub] = useState(false);
 
-  const { data: sub, error, revalidate } = useSWR<Sub>(
-    subName ? `/subs/getSub/${subName}` : null
-  );
+  const {
+    data: sub,
+    error,
+    revalidate,
+  } = useSWR<Sub>(subName ? `/subs/getSub/${subName}` : null);
 
   const openFileInput = (type: string) => {
     if (!ownSub) {
@@ -59,7 +61,7 @@ export default function SubPage() {
     pageContent = <div className="text-5xl text-center">No posts</div>;
   } else {
     pageContent = sub.posts.map((post) => (
-      <PostCard key={post.identifier} post={post} />
+      <PostCard key={post.identifier} post={post} revalidate={revalidate} />
     ));
   }
 

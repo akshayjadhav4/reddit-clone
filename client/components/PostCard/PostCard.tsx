@@ -26,7 +26,7 @@ const ActionButton = ({ children }) => {
 export default function PostCard({ post, revalidate }: PostCardProps) {
   const { authenticated } = useAuthState();
   const router = useRouter();
-
+  const isInSubPage = router.pathname === "/r/[sub]";
   const vote = async (value) => {
     if (!authenticated) router.push("/login");
     if (value === post.userVote) {
@@ -79,20 +79,25 @@ export default function PostCard({ post, revalidate }: PostCardProps) {
       {/* Post section */}
       <div className="w-full p-2">
         <div className="flex items-center">
-          <Link href={`/r/${post.subName}`}>
-            <img
-              src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
-              alt="avatar"
-              className="w-6 h-6 mr-1 rounded-full cursor-pointer"
-            />
-          </Link>
-          <Link href={`/r/${post.subName}`}>
-            <a className="text-xs font-bold hover:underline">
-              /r/{post.subName}
-            </a>
-          </Link>
+          {!isInSubPage && (
+            <>
+              <Link href={`/r/${post.subName}`}>
+                <img
+                  src={post.sub.imageURL}
+                  alt="avatar"
+                  className="w-6 h-6 mr-1 rounded-full cursor-pointer"
+                />
+              </Link>
+              <Link href={`/r/${post.subName}`}>
+                <a className="text-xs font-bold hover:underline">
+                  /r/{post.subName}
+                </a>
+              </Link>
+              <span className="mx-1 text-xs text-gray-500">•</span> Posted By{" "}
+            </>
+          )}
+
           <p className="text-xs text-gray-500">
-            <span className="mx-1">•</span> Posted By{" "}
             <Link href={`/u/${post.username}`}>
               <a className="mx-1 hover:underline">/u/{post.username}</a>
             </Link>
