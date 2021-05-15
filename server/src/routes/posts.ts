@@ -27,11 +27,15 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
-const getPosts = async (_: Request, res: Response) => {
+const getPosts = async (req: Request, res: Response) => {
+  const currentPage: number = (req.query.page || 0) as number;
+  const postPerPage: number = (req.query.count || 8) as number;
   try {
     const posts = await Post.find({
       order: { createdAt: "DESC" },
       relations: ["comments", "votes", "sub"],
+      skip: currentPage * postPerPage,
+      take: postPerPage,
     });
     if (res.locals.user) {
       posts.forEach((post) => post.setUserVote(res.locals.user));

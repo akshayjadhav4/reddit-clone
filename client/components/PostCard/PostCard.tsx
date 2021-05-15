@@ -10,6 +10,7 @@ import { useAuthState } from "../../context/auth";
 
 interface PostCardProps {
   post: Post;
+  revalidate?: Function;
 }
 
 dayjs.extend(relativeTime);
@@ -22,26 +23,35 @@ const ActionButton = ({ children }) => {
   );
 };
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, revalidate }: PostCardProps) {
   const { authenticated } = useAuthState();
   const router = useRouter();
 
   const vote = async (value) => {
     if (!authenticated) router.push("/login");
-
+    if (value === post.userVote) {
+      value = 0;
+    }
     try {
       const res = await Axios.post("/msc/vote", {
         identifier: post.identifier,
         slug: post.slug,
         value,
       });
+      if (revalidate) {
+        revalidate();
+      }
     } catch (error) {
       console.log("ERROR WHILE VOTING", error);
     }
   };
 
   return (
-    <div key={post.identifier} className="flex mb-4 bg-white rounded">
+    <div
+      key={post.identifier}
+      id={post.identifier}
+      className="flex mb-4 bg-white rounded"
+    >
       {/* Vote section */}
       <div className="w-10 py-3 text-center bg-gray-200 rounded-l">
         <div
