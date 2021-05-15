@@ -7,7 +7,7 @@ import { SWRConfig } from "swr";
 
 import Navbar from "../components/Navbar/Navbar";
 import { AuthProvider } from "../context/auth";
-Axios.defaults.baseURL = "http://localhost:2004/api";
+Axios.defaults.baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
 Axios.defaults.withCredentials = true;
 
 const fetcher = async (url: string) => {
