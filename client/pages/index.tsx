@@ -12,7 +12,8 @@ import { Sub, Post } from "../types";
 export default function Home() {
   const [observedPost, setObservedPost] = useState("");
   const { authenticated } = useAuthState();
-
+  const description =
+    "Reddit Clone in NextJS using Node JS, Express, postgresql.";
   // const { data: posts } = useSWR<Post[]>("/posts/getPosts");
   const { data: subs } = useSWR<Sub[]>("/msc/topSubs");
 
@@ -58,6 +59,11 @@ export default function Home() {
       <Head>
         <title>Get the information</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content={description} />
+        <meta property="og:title" content="Reddit" />
+        <meta property="og:description" content={description} />
+        <meta property="twitter:title" content="Reddit" />
+        <meta property="twiiter:description" content={description} />
       </Head>
       <div className="container flex pt-4">
         {/* POSTS */}
